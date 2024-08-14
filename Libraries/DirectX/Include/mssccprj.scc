@@ -1,0 +1,41 @@
+SCC = This is a Source Code Control file
+
+[BkOffice.Mak]
+SCC_Aux_Path = "D:\vampire"
+SCC_Project_Name = "$/VPOnline/1.Develop/Programmer/Common/DirectX/Include", GJCAAAAA
+
+[Copyfile.Mak]
+SCC_Aux_Path = "D:\vampire"
+SCC_Project_Name = "$/VPOnline/1.Develop/Programmer/Common/DirectX/Include", GJCAAAAA
+
+[Disable.Mak]
+SCC_Aux_Path = "D:\vampire"
+SCC_Project_Name = "$/VPOnline/1.Develop/Programmer/Common/DirectX/Include", GJCAAAAA
+
+[GloblMak.Mak]
+SCC_Aux_Path = "D:\vampire"
+SCC_Project_Name = "$/VPOnline/1.Develop/Programmer/Common/DirectX/Include", GJCAAAAA
+
+[INetSDK.Mak]
+SCC_Aux_Path = "D:\vampire"
+SCC_Project_Name = "$/VPOnline/1.Develop/Programmer/Common/DirectX/Include", GJCAAAAA
+
+[NtWin32.Mak]
+SCC_Aux_Path = "D:\vampire"
+SCC_Project_Name = "$/VPOnline/1.Develop/Programmer/Common/DirectX/Include", GJCAAAAA
+
+[SDKBld.Mak]
+SCC_Aux_Path = "D:\vampire"
+SCC_Project_Name = "$/VPOnline/1.Develop/Programmer/Common/DirectX/Include", GJCAAAAA
+
+[SDKPropBld.Mak]
+SCC_Aux_Path = "D:\vampire"
+SCC_Project_Name = "$/VPOnline/1.Develop/Programmer/Common/DirectX/Include", GJCAAAAA
+
+[Win32.Mak]
+SCC_Aux_Path = "D:\vampire"
+SCC_Project_Name = "$/VPOnline/1.Develop/Programmer/Common/DirectX/Include", GJCAAAAA
+
+[wmdm.mak]
+SCC_Aux_Path = "D:\vampire"
+SCC_Project_Name = "$/VPOnline/1.Develop/Programmer/Common/DirectX/Include", GJCAAAAA
