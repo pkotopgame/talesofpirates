@@ -1,18 +1,18 @@
 :: Server Release
-call :MKLINK "%cd%\..\server\AccountServer\AccountServer.exe" "%cd%\Server\AccountServer\Bin\AccountServer.exe"
-call :MKLINK "%cd%\..\server\AccountServer\AccountServer.pdb" "%cd%\Server\AccountServer\Bin\AccountServer.pdb"
-call :MKLINK "%cd%\..\server\GroupServer\GroupServer.exe" "%cd%\Server\GroupServer\Bin\GroupServer.exe"
-call :MKLINK "%cd%\..\server\GroupServer\GroupServer.pdb" "%cd%\Server\GroupServer\Bin\GroupServer.pdb"
-call :MKLINK "%cd%\..\server\GateServer\GateServer.exe" "%cd%\Server\GateServer\Bin\GateServer.exe"
-call :MKLINK "%cd%\..\server\GateServer\GateServer.pdb" "%cd%\Server\GateServer\Bin\GateServer.pdb"
-call :MKLINK "%cd%\..\server\GameServer\GameServer.exe" "%cd%\Server\GameServer\Bin\GameServer.exe"
-call :MKLINK "%cd%\..\server\GameServer\GameServer.pdb" "%cd%\Server\GameServer\Bin\GameServer.pdb"
+call :MKLINK "C:\Users\amin\Desktop\Top Project File\server\AccountServer\AccountServer.exe" "C:\Users\amin\Documents\talesofpirates\Server\AccountServer\Bin\AccountServer.exe"
+call :MKLINK "C:\Users\amin\Desktop\Top Project File\server\AccountServer\AccountServer.pdb" "C:\Users\amin\Documents\talesofpirates\Server\AccountServer\Bin\AccountServer.pdb"
+call :MKLINK "C:\Users\amin\Desktop\Top Project File\server\GroupServer\GroupServer.exe" "C:\Users\amin\Documents\talesofpirates\Server\GroupServer\Bin\GroupServer.exe"
+call :MKLINK "C:\Users\amin\Desktop\Top Project File\server\GroupServer\GroupServer.pdb" "C:\Users\amin\Documents\talesofpirates\Server\GroupServer\Bin\GroupServer.pdb"
+call :MKLINK "C:\Users\amin\Desktop\Top Project File\server\GateServer\GateServer.exe" "C:\Users\amin\Documents\talesofpirates\Server\GateServer\Bin\GateServer.exe"
+call :MKLINK "C:\Users\amin\Desktop\Top Project File\server\GateServer\GateServer.pdb" "C:\Users\amin\Documents\talesofpirates\Server\GateServer\Bin\GateServer.pdb"
+call :MKLINK "C:\Users\amin\Desktop\Top Project File\server\GameServer\GameServer.exe" "C:\Users\amin\Documents\talesofpirates\Server\GameServer\Bin\GameServer.exe"
+call :MKLINK "C:\Users\amin\Desktop\Top Project File\server\GameServer\GameServer.pdb" "C:\Users\amin\Documents\talesofpirates\Server\GameServer\Bin\GameServer.pdb"
 
 :: Client Release
-call :MKLINK "%cd%\..\client\system\Game.exe" "%cd%\Client\bin\system\Game.exe"
-call :MKLINK "%cd%\..\client\system\Game.pdb" "%cd%\Client\bin\system\Game.pdb"
-call :MKLINK "%cd%\..\client\system\MindPower3D_D8R.dll" "%cd%\Engine\lib\MindPower3D_D8R.dll"
-call :MKLINK "%cd%\..\client\system\MindPower3D_D8R.pdb" "%cd%\Engine\lib\MindPower3D_D8R.pdb"
+call :MKLINK "C:\Users\amin\Desktop\Top Project File\client\system\Game.exe" "C:\Users\amin\Documents\talesofpirates\Client\bin\system\Game.exe"
+call :MKLINK "C:\Users\amin\Desktop\Top Project File\client\system\Game.pdb" "C:\Users\amin\Documents\talesofpirates\Client\bin\system\Game.pdb"
+call :MKLINK "C:\Users\amin\Desktop\Top Project File\client\system\MindPower3D_D8R.dll" "C:\Users\amin\Documents\talesofpirates\Engine\lib\MindPower3D_D8R.dll"
+call :MKLINK "C:\Users\amin\Desktop\Top Project File\client\system\MindPower3D_D8R.pdb" "C:\Users\amin\Documents\talesofpirates\Engine\lib\MindPower3D_D8R.pdb"
 
 pause
 

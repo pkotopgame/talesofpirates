@@ -183,7 +183,7 @@ void CCharacter::Initially()
 	m_bStoreEnable = false;
 	//showrank cooldown @mothannakh
 	ShowRankColD = 0;
-	
+	GuildCD = 0; //guild cd
 	_dwStallTick = 0;
 
 

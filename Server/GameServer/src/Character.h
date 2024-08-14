@@ -766,6 +766,7 @@ public:
 	bool				m_bStoreEnable;
 	//cooldown for ranking
 	DWORD				ShowRankColD;	
+	DWORD				GuildCD;
 	int					m_nPetNum;
 	
 	stNetChangeChaPart	m_SChaPart;

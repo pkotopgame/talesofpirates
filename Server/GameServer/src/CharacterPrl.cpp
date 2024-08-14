@@ -58,9 +58,14 @@ void CCharacter::ProcessPacket(unsigned short usCmd, RPACKET pk)
 		if (!IsLiveing()){
 			SystemNotice("Dead pirates are unable to trade.");
 		}
-		else if (!IsInArea(2)){
+		else if (!IsInArea(2)) {
 			SystemNotice("Must be in safe zone to use the guild bank.");
-		}else{
+		}
+		else if (const auto COOLDOWN = GetTickCount(); GetPlyMainCha()->GuildCD > COOLDOWN) { //add guild bank cool down
+			BickerNotice("Please Calm Down. Don't Spam! %ds Left!", (GetPlyMainCha()->GuildCD - COOLDOWN) / 1000);
+		}
+		else {
+			GetPlyMainCha()->GuildCD = COOLDOWN + 3000; //add guild bank cool down for 3 seconds
 			switch (bankType){
 
 				case 0:{ //bankoper
@@ -118,7 +123,8 @@ void CCharacter::ProcessPacket(unsigned short usCmd, RPACKET pk)
 					
 					int canTake = (emGldPermTakeBank&guildPermission);
 					int canGive = (emGldPermDepoBank&guildPermission);
-
+					// double check for guild view avoid dupe and such
+					int canview = (emGldPermViewBank & guildPermission);
 					CTableGuild::BankLog l;
 					
 					if (action == 0 && canTake == emGldPermTakeBank){ //withdraw
