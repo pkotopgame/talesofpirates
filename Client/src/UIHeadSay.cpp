@@ -89,7 +89,7 @@ bool CHeadSay::Init()
 	for (int i = 0; i < EVIL_MAX; i++)
 	{
 		char buffer[64] = {0};
-		sprintf(buffer, "texture/icon/evil_lv%d.tga", i + 1);
+		sprintf(buffer, "texture/icon/evil_lv%d.png", i + 1);
 
 		if (!_pImgEvil)
 			break;
@@ -943,7 +943,7 @@ void CHeadSay::SetEvilLevel(short sMaxEnergy)
 	{
 		_sEvilLevel = 3;
 	}
-	else if (sMaxEnergy == 8)
+	else if (sMaxEnergy == 8 || sMaxEnergy == 9 || sMaxEnergy == 10)
 	{
 		_sEvilLevel = 4;
 	}

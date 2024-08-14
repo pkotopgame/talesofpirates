@@ -1080,6 +1080,7 @@ void xShipLaunchList::SelectItem(CGuiData *pSender)
 
 	if (eLaunch == m_eFlag)
 	{
+        g_stUIBoat.GetHuman()->RemoveCloakGlow();
 		CS_SelectBoat(m_dwNpcID, sel_item);
 	}
 	else if (eTrade == m_eFlag || eRepair == m_eFlag || eSalvage == m_eFlag || eSupply == m_eFlag || eUpgrade == m_eFlag)
@@ -1164,5 +1165,6 @@ void xShipMgr::CloseForm()
 	if(_launch_list)
 	{
 		_launch_list->CloseForm();
+        g_stUIBoat.GetHuman()->RenderCloakGlow();
 	}
 }

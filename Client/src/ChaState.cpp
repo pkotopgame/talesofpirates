@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+ï»¿#include "StdAfx.h"
 #include "chastate.h"
 #include "SkillStateRecord.h"
 #include "netprotocol.h"
@@ -8,7 +8,7 @@
 //---------------------------------------------------------------------------
 // class CChaStateMgr
 //---------------------------------------------------------------------------
-CSkillStateRecord* CChaStateMgr::_pLastActInfo = NULL;
+CSkillStateRecord* CChaStateMgr::_pLastActInfo = nullptr;
 int CChaStateMgr::_nShopLevel = 0;
 
 CChaStateMgr::stChaState CChaStateMgr::_sInitState[SKILL_STATE_MAXID];
@@ -32,14 +32,14 @@ CChaStateMgr::CChaStateMgr(CCharacter* pCha)
 
 void CChaStateMgr::ChaDestroy()
 {
-	for( states::iterator it=_states.begin(); it!=_states.end(); it++ )
+	for (const auto& _state : _states)
 	{
-		if( (*it)->pEffect ) 
+		if(_state->pEffect ) 
 		{
-			LG( _pCha->getLogName(), g_oLangRec.GetString(29), (*it)->pEffect->getIdxID(), (*it)->pEffect );
+			LG( _pCha->getLogName(), g_oLangRec.GetString(29), _state->pEffect->getIdxID(), _state->pEffect );
 
-			(*it)->pEffect->SetValid( FALSE );
-			(*it)->pEffect = NULL;
+			_state->pEffect->SetValid( FALSE );
+			_state->pEffect = nullptr;
 		}
 	}
 
@@ -47,49 +47,43 @@ void CChaStateMgr::ChaDestroy()
 	_states.clear();
 }
 
-CBoolSet& CChaStateMgr::Synchro( stSkillState* pState, int nCount )
-{
+CBoolSet& CChaStateMgr::Synchro(const stSkillState* pState, int nCount) {
 	static CBoolSet _ChaState;
-	static stChaState* stTmp[SKILL_STATE_MAXID] = { NULL };
+	static stChaState* stTmp[SKILL_STATE_MAXID] = { nullptr };
 	static unsigned int nTmpCount = 0;
 
-	// ÓÃÓÚÈ·ÈÏÊÇ·ñÒÑ¾­ÐÞ¸Ä
-	static bool IsExist[SKILL_STATE_MAXID] = { NULL };
-	memset( IsExist, 0, sizeof(IsExist) );
+	// ç”¨äºŽç¡®è®¤æ˜¯å¦å·²ç»ä¿®æ”¹
+	static bool IsExist[SKILL_STATE_MAXID] = {};
+	memset(IsExist, 0, sizeof(IsExist));
 
 	static int nID = 0;
 	nTmpCount = 0;
-	for( states::iterator it=_states.begin(); it!=_states.end(); it++ )
+	for (const auto& _state : _states)
 	{
-		(*it)->IsDel = true;
+		_state->IsDel = true;
 
-		nID = (*it)->pInfo->nID;
-		if( !IsExist[nID] )
-		{
+		nID = _state->pInfo->nID;
+		if (!IsExist[nID]) {
 			IsExist[nID] = true;
 
-			stTmp[nTmpCount++] = *it;
+			stTmp[nTmpCount++] = _state;
 		}
 	}
 
-	stChaState* pChaState = NULL;
-    for( int i=0; i<nCount; i++ )
-	{
+	stChaState* pChaState = nullptr;
+	for (int i = 0; i < nCount; i++) {
 		nID = pState[i].chID;
-		if( nID<0 || nID>=SKILL_STATE_MAXID ) 
-		{
+		if (nID < 0 || nID >= SKILL_STATE_MAXID) {
 			continue;
 		}
 
 		pChaState = &_sChaState[nID];
-		if( pChaState->pInfo && pState[i].chLv>0 )
-		{
+		if (pChaState->pInfo && pState[i].chLv > 0) {
 			pChaState->IsDel = false;
 			pChaState->chStateLv = pState[i].chLv;
 			pChaState->lTimeRemaining = pState[i].lTimeRemaining;
 
-			if( !IsExist[nID] )
-			{
+			if (!IsExist[nID]) {
 				IsExist[nID] = true;
 
 				stTmp[nTmpCount++] = pChaState;
@@ -103,61 +97,51 @@ CBoolSet& CChaStateMgr::Synchro( stSkillState* pState, int nCount )
 	_hits.clear();
 
 	_ChaState.AllTrue();
-	CSkillStateRecord* pInfo = NULL;
-	for ( unsigned int i=0; i<nTmpCount; i++ )
-	{
+	CSkillStateRecord* pInfo = nullptr;
+	for (unsigned int i = 0; i < nTmpCount; i++) {
 		pChaState = stTmp[i];
-		if( pChaState->IsDel )
-		{
-			LG( _pCha->getLogName(), g_oLangRec.GetString(30), pChaState->pInfo->nID, pChaState->pInfo->szName, pChaState->pInfo->sEffect );
+		if (pChaState->IsDel) {
+			LG(_pCha->getLogName(), g_oLangRec.GetString(30), pChaState->pInfo->nID, pChaState->pInfo->szName, pChaState->pInfo->sEffect);
 
-			// ÒÑÓÐµÄÉ¾³ý
-			if( pChaState->pEffect )
-			{
-				LG( _pCha->getLogName(), g_oLangRec.GetString(31), pChaState->pEffect->getIdxID(), pChaState->pEffect );
+			// Existing delete
+			if (pChaState->pEffect) {
+				LG(_pCha->getLogName(), g_oLangRec.GetString(31), pChaState->pEffect->getIdxID(), pChaState->pEffect);
 
-				pChaState->pEffect->SetValid( FALSE );
-				pChaState->pEffect = NULL;
+				pChaState->pEffect->SetValid(FALSE);
+				pChaState->pEffect = nullptr;
 			}
 			pChaState->chStateLv = 0;
 		}
-		else
-		{
-			// Ôö¼Ó
-			_states.push_back( pChaState );
-			LG( _pCha->getLogName(), g_oLangRec.GetString(32), pChaState->pInfo->nID, pChaState->pInfo->szName, pChaState->pInfo->sEffect );
+		else {
+			// increase
+			_states.push_back(pChaState);
+			LG(_pCha->getLogName(), g_oLangRec.GetString(32), pChaState->pInfo->nID, pChaState->pInfo->szName, pChaState->pInfo->sEffect);
 
 			pInfo = pChaState->pInfo;
-			if( pInfo->sBitEffect>0 )
-			{
-				_hits.push_back( CCharacter::stHit(pInfo->sBitEffect,pInfo->sDummy2) );
+			if (pInfo->sBitEffect > 0) {
+				_hits.push_back(CCharacter::stHit(pInfo->sBitEffect, pInfo->sDummy2));
 			}
 
-			if (!pInfo->bCanMove) {
+			if (!pInfo->bCanMove)
 				_ChaState.SetFalse(enumChaStateMove);
-				_pCha->_isArrive = true;
-				if (_pCha->GetActor()->GetCurState()) {
-					_pCha->GetActor()->GetCurState()->MoveEnd(_pCha->GetCurX(), _pCha->GetCurY(), enumMSTATE_CANTMOVE);
-				}
-				
-			}
-			if( !pInfo->bCanGSkill ) _ChaState.SetFalse( enumChaStateAttack );
-			if( !pInfo->bCanMSkill ) _ChaState.SetFalse( enumChaStateUseSkill );
-			if( !pInfo->bCanTrade ) _ChaState.SetFalse( enumChaStateTrade );
-			if( !pInfo->bCanItem ) _ChaState.SetFalse( enumChaStateUseItem );
-			if( !pInfo->bNoHide ) _ChaState.SetFalse( enumChaStateNoHide );
-			if( pInfo->IsDizzy ) _ChaState.SetFalse( enumChaStateNoDizzy );
-			if( pInfo->GetActNum()>0 ) 
-			{
+			if (!pInfo->bCanGSkill)
+				_ChaState.SetFalse(enumChaStateAttack);
+			if (!pInfo->bCanMSkill)
+				_ChaState.SetFalse(enumChaStateUseSkill);
+			if (!pInfo->bCanTrade)
+				_ChaState.SetFalse(enumChaStateTrade);
+			if (!pInfo->bCanItem)
+				_ChaState.SetFalse(enumChaStateUseItem);
+			if (!pInfo->bNoHide)
+				_ChaState.SetFalse(enumChaStateNoHide);
+			if (pInfo->IsDizzy)
+				_ChaState.SetFalse(enumChaStateNoDizzy);
+			if (pInfo->GetActNum() > 0) {
 				_pLastActInfo = pInfo;
-				_ChaState.SetFalse( enumChaStateNoAni );
+				_ChaState.SetFalse(enumChaStateNoAni);
 			}
-			if( pInfo->nID==99 )
-			{
-				_nShopLevel = pChaState->chStateLv;
-				_ChaState.SetFalse( enumChaStateNoShop );
-			}
-			if (pInfo->nID == 96)
+
+			if (pInfo->nID == 96) //@mothannakh dw 1 boss freeze stun fix
 			{
 				_ChaState.SetFalse(enumChaStateMove);
 				_ChaState.SetFalse(enumChaStateAttack);
@@ -168,14 +152,73 @@ CBoolSet& CChaStateMgr::Synchro( stSkillState* pState, int nCount )
 				_ChaState.SetFalse(enumChaStateNoDizzy);
 				_pCha->_isArrive = true;
 			}
-
-			if( pInfo->sEffect>0 && !pChaState->pEffect )
+			else if (pInfo->nID == 159) // flash stun bug
 			{
-				pChaState->pEffect = _pCha->SelfEffect( pInfo->sEffect, pInfo->sDummy1, true );
-				LG( _pCha->getLogName(), g_oLangRec.GetString(33), pInfo->sEffect, pInfo->sDummy1, pChaState->pEffect );
+				_ChaState.SetFalse(enumChaStateMove);
+				_ChaState.SetFalse(enumChaStateAttack);
+				_ChaState.SetFalse(enumChaStateUseSkill);
+				_ChaState.SetFalse(enumChaStateTrade);
+				_ChaState.SetFalse(enumChaStateUseItem);
+				_ChaState.SetFalse(enumChaStateNoHide);
+				_ChaState.SetFalse(enumChaStateNoDizzy);
+				_pCha->_isArrive = true;
+			}
+			else if (pInfo->nID == 45) // Primal Rage/ stun bug
+			{
+				_ChaState.SetFalse(enumChaStateMove);
+				_ChaState.SetFalse(enumChaStateAttack);
+				_ChaState.SetFalse(enumChaStateUseSkill);
+				_ChaState.SetFalse(enumChaStateTrade);
+				_ChaState.SetFalse(enumChaStateUseItem);
+				_pCha->_isArrive = true;
+			}
+			else if (pInfo->nID == 98) // death night
+			{
+				_ChaState.SetFalse(enumChaStateMove);
+				_ChaState.SetFalse(enumChaStateAttack);
+				_ChaState.SetFalse(enumChaStateUseSkill);
+				_ChaState.SetFalse(enumChaStateTrade);
+				_ChaState.SetFalse(enumChaStateUseItem);
+				_pCha->_isArrive = true;
+			}
+			else if (pInfo->nID == 116) //  Black Dragon Terror
+			{
+				_ChaState.SetFalse(enumChaStateMove);
+				_ChaState.SetFalse(enumChaStateAttack);
+				_ChaState.SetFalse(enumChaStateUseSkill);
+				_ChaState.SetFalse(enumChaStateTrade);
+				_ChaState.SetFalse(enumChaStateUseItem);
+				_pCha->_isArrive = true;
+			}
+			else if (pInfo->nID == 87) // Algae Entanglement
+			{
+				_ChaState.SetFalse(enumChaStateMove);
+				_ChaState.SetFalse(enumChaStateAttack);
+				_ChaState.SetFalse(enumChaStateUseSkill);
+				_ChaState.SetFalse(enumChaStateTrade);
+				_ChaState.SetFalse(enumChaStateUseItem);
+				_pCha->_isArrive = true;
+			}
+			else if (pInfo->nID == 86) // Tornado
+			{
+				_ChaState.SetFalse(enumChaStateMove);
+				_ChaState.SetFalse(enumChaStateAttack);
+				_ChaState.SetFalse(enumChaStateUseSkill);
+				_ChaState.SetFalse(enumChaStateTrade);
+				_ChaState.SetFalse(enumChaStateUseItem);
+				_pCha->_isArrive = true;
+			}
+
+			if (pInfo->nID == 99) {
+				_nShopLevel = pChaState->chStateLv;
+				_ChaState.SetFalse(enumChaStateNoShop);
+			}
+
+			if (pInfo->sEffect > 0 && !pChaState->pEffect) {
+				pChaState->pEffect = _pCha->SelfEffect(pInfo->sEffect, pInfo->sDummy1, true);
+				LG(_pCha->getLogName(), g_oLangRec.GetString(33), pInfo->sEffect, pInfo->sDummy1, pChaState->pEffect);
 			}
 		}
 	}
 	return _ChaState;
 }
-

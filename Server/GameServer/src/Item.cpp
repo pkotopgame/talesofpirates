@@ -14,13 +14,17 @@
 _DBC_USING
 
 CItem::CItem()
-{T_B
-	chValid = 0;
-	m_pCItemRecord = 0;
+	: m_ulStartTick(GetTickCount()), m_ulOnTick(g_Config.m_lItemShowTime * 1000), m_chProtType(enumITEM_PROT_OWN), m_ulProtOnTick(g_Config.m_lItemProtTime * 1000), m_ulProtID(0), m_ulProtHandle(0) {
+	T_B
+		chValid = 0;
+	m_pCItemRecord = nullptr;
 	m_SGridContent.sID = 0;
+	m_SGridContent.sEnergy[1] = 0;
 	m_lFromEntityID = 0;
 	m_chSpawType = enumITEM_APPE_NATURAL;
-T_E}
+	T_E
+}
+
 
 void CItem::Initially()
 {T_B
@@ -62,7 +66,6 @@ void CItem::OnBeginSeen(CCharacter *pCMainCha)
 	WRITE_LONG(pk, m_lFromEntityID);
 	// 事件信息
 	WriteEventInfo(pk);
-
 	pCMainCha->ReflectINFof(this,pk);//通告
 T_E}
 
@@ -77,7 +80,7 @@ T_E}
 void CItem::Run(dbc::uLong ulCurTick)
 {
 	if (m_ulProtID != 0)
-		if (m_ulProtOnTick != 0 && ulCurTick - m_ulStartTick >= m_ulProtOnTick) // 保护时间消失
+		if (m_ulProtOnTick != 0 && ulCurTick - m_ulStartTick >= m_ulProtOnTick) // 
 			m_ulProtID = 0;
 
 	if (m_ulOnTick != 0 && ulCurTick - m_ulStartTick >= m_ulOnTick)

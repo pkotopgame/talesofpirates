@@ -13,6 +13,7 @@
 #include "tools.h"
 #include "GuildData.h"
 #include "uiboatform.h"
+#include "UIBoxForm.h"
 using namespace std;
 using namespace GUI;
 //---------------------------------------------------------------------------
@@ -25,7 +26,10 @@ bool CStateMgr::Init()
 	frmState = _FindForm("frmState");  //���Ա��� 
 	if( !frmState )		return false;
 	frmState->evtShow = _evtMainShow;
-
+	const auto btnChangeName = dynamic_cast<CTextButton*>(frmState->Find("btnChangeName"));
+	if(!btnChangeName)
+		return Error(g_oLangRec.GetString(45), frmState->GetName(), "btnChangeName");
+	btnChangeName->evtMouseClick = _ClickChangeName;
 	//frmState �ڵĿؼ��б�
 	labStateName  = dynamic_cast<CLabelEx*>(frmState->Find("labStateName"));    
 	if( !labStateName )		return Error( g_oLangRec.GetString(45), frmState->GetName(), "labStateName" );
@@ -90,6 +94,7 @@ bool CStateMgr::Init()
 	labStateSP->SetIsCenter(true);
 
 
+
 	//6����������
 	labStrshow  = 	( CLabelEx *)frmState->Find( "labStrshow" );
 	labDexshow  = 	( CLabelEx *)frmState->Find( "labDexshow" );
@@ -115,6 +120,28 @@ bool CStateMgr::Init()
 
 
 }
+
+void CStateMgr::_ClickChangeName(CGuiData* pSender, int x, int y, DWORD key) {
+	g_pGameApp->SysInfo("Make Sure you have Change Name Card!");
+	if (CCharacter* pMain = CGameScene::GetMainCha(); !pMain->IsPlayer()) {
+		g_pGameApp->ShowMidText("You must be in safe zone to use Change Name function ");
+		return;
+	}
+	CBoxMgr::ShowNumberBox(_evtChangeName, -1, "Enter Your New Name:", false);
+}
+void CStateMgr::_evtChangeName(CCompent* pSender, const int nMsgType, int x, int y, DWORD dwKey) {
+	if (nMsgType != static_cast<int>(CForm::eModalResult::mrYes))
+		return;
+
+	const auto nameBox = static_cast<stNumBox*>(pSender->GetForm()->GetPointer());
+	if (!nameBox)
+		return;
+	// char* strName;
+	std::string strName;
+	nameBox->GetString(strName);
+	CS_BeginAction(g_stUIBoat.GetHuman(), enumACTION_ChangepName, &strName);
+}
+
 
 void CStateMgr::End()
 {

@@ -34,7 +34,9 @@ protected:
 private:
 	static void _evtMainShow(CGuiData *pSender);
 	static void MainMouseDown(CGuiData *pSender, int x, int y, DWORD key);
-
+	//change Player Name btn mothanakh
+	static void _ClickChangeName(CGuiData* pSender, int x, int y, DWORD key);
+	static void _evtChangeName(CCompent* pSender, int nMsgType, int x, int y, DWORD dwKey);
 private:
 	//frmState界面的控件
 	CForm*			frmState;

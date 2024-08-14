@@ -616,7 +616,7 @@
 #define CMD_MP_GUILDNOTICE		CMD_MP_BASE + 32
 #define CMD_MP_CANRECEIVEREQUESTS	CMD_MP_BASE + 33
 #define CMD_MP_MUTE_PLAYER		CMD_MP_BASE + 34
-
+#define CMD_MP_ChangePName		CMD_MP_BASE + 35
 /*=====================================================================================================
 *					Ga(t)eServer <->Grou(p)Server 
 */

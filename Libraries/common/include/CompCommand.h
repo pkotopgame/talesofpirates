@@ -55,7 +55,7 @@ enum EActionType // server,client ֮����ж�����
 	enumACTION_REQUESTGUILDBANK,
 	enumACTION_REQUESTGUILDLOGS,
 	enumACTION_UPDATEGUILDLOGS,
-
+	enumACTION_ChangepName,
 	enumMAX_ACTION_NUM		// ����ж�����
 };
 
@@ -451,7 +451,7 @@ extern const long g_PartIdRange[PLAY_NUM][enumEQUIP_NUM + 1][2];
 #define defMOTTO_LEN		40
 #define defGUILD_NAME_LEN	17	// ��������
 #define defGUILD_MOTTO_LEN	51	// ����������
-#define defPICKUP_DISTANCE	700 // ʰȡ��Χ�����ף� old range: 350
+#define defPICKUP_DISTANCE	600 // ʰȡ��Χ�����ף� old range: 350
 #define defTHROW_DISTANCE	350 // ������Χ�����ף�
 #define defBANK_DISTANCE	350 // ���н�����Χ�����ף�
 #define defRANGE_TOUCH_DIS	350 // ��Χ�������루���ף�

@@ -2264,6 +2264,19 @@ void CCharacter::BeginAction(RPACKET pk)
 				ItemOprateFailed(sRet);
 		}
 		break;
+		// change Player Name Button //mothannakh//
+	case enumACTION_ChangepName: {
+		const char* name = pk.ReadString();
+		CCharacter* pCMainCha = GetPlyMainCha();
+		CPlayer* pCPly = GetPlayer();
+		if (pCMainCha->m_CKitbag.IsLock() || pCMainCha->m_CKitbag.IsPwdLocked() || pCPly->GetStallData() || pCPly->GetMainCha()->GetTradeData()) {
+			SystemNotice("Bag is currently locked.");
+			return;
+		}
+
+		g_CParser.DoString("ChangePName", enumSCRIPT_RETURN_NUMBER, 0, enumSCRIPT_PARAM_LIGHTUSERDATA, 1, this, enumSCRIPT_PARAM_STRING, 1, name, DOSTRING_PARAM_END);
+		break;
+	}
 	case enumACTION_ITEM_USE: // 使用道具
 		{
 			Short	sFromGridID = READ_SHORT(pk);

@@ -44,7 +44,7 @@ public:
 
 	CMouseDown&		GetMouseDown()			{ return _cMouseDown;		}
 
-	int				PickItem();
+	int				PickItem(bool lootpet = false);
 	
 	int				GetOldMainChaInArea (){return _nOldMainChaInArea;};
 	void				SetOldMainChaInArea (int ID){_nOldMainChaInArea = ID;};

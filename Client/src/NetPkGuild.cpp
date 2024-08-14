@@ -3,6 +3,7 @@
 #include "netcommand.h"
 #include "uiguildmgr.h"
 #include "uiglobalvar.h"
+#include "GameApp.h"
 
 using namespace std;
 
@@ -87,6 +88,7 @@ BOOL MC_GUILD_LISTTRYPLAYER(LPRPACKET pk)
 	uShort	l_maxmem = pk.ReadShort();	//最大成员数
 	auto	l_exp = pk.ReadLongLong();
 	uLong	l_remain = pk.ReadLong();
+	pk.ReadLong();//9
 	NetMC_LISTTRYPLAYER_BEGIN(l_gldid,l_gldname,l_motto,l_stat,l_ldrname,l_memnum,l_maxmem,l_exp,l_remain);
 	
 	uLong	l_num = pk.ReverseReadLong();
@@ -96,6 +98,7 @@ BOOL MC_GUILD_LISTTRYPLAYER(LPRPACKET pk)
 		cChar*	l_chaname = pk.ReadString();
 		cChar*	l_job = pk.ReadString();
 		uShort	l_degree = pk.ReadShort();
+		g_pGameApp->SysInfo("id %d , %s, %s %d", l_chaid, l_chaname, l_job, l_degree);
 		NetMC_LISTTRYPLAYER(l_chaid,l_chaname,l_job,l_degree);
 	}
 	NetMC_LISTTRYPLAYER_END();

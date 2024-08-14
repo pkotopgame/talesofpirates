@@ -294,6 +294,11 @@ void GroupServerApp::OnProcessData(DataSocket *datasock,RPacket &recvbuf)
 		}
 		switch (l_cmd)
 		{
+		case CMD_MP_ChangePName: {
+			// set new character name inside groupserver
+			l_ply->m_chaname[l_ply->m_currcha] = recvbuf.ReadString();
+			break;
+		}
 		case CMD_MP_PUSHTOGUILDBANK:
 		case CMD_CP_GUILDBANK:{
 			int guildID = l_ply->m_guild[l_ply->m_currcha];

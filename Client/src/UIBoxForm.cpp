@@ -467,11 +467,10 @@ int stNumBox::GetNumber()
 	return n;
 }
 
-void stNumBox::GetString(const char*& out)
-{	
+void stNumBox::GetString(std::string& out) const {
 	out = edtNumber->GetCaption();
-	//sprintf(out,"%s",edtNumber->GetCaption() );
-	//memcpy(out,edtNumber->GetCaption() ,strlen(edtNumber->GetCaption() )+1 );
+	// sprintf(out,"%s",edtNumber->GetCaption() );
+	// memcpy(out,edtNumber->GetCaption() ,strlen(edtNumber->GetCaption() )+1 );
 }
 
 void stNumBox::Refresh()

@@ -525,8 +525,8 @@ private:
 
     CSceneItem*     _pHandItem[ enumEQUIP_NUM ];
 	CEffectObj*		_pHandItemEff[ enumEQUIP_NUM ];
-
-	
+	CEffectObj* CLOAKGlow[enumEQUIP_NUM]{nullptr};	//cloak glowing from iteminfo @mothannakh 
+	static int  GetCloakGlowByRace(int race, int level);
 
     CSceneItem*     _pNpcStateItem;
 	CSceneItem*		_pShopItem;
@@ -586,9 +586,13 @@ public:
 	{
 		mParentNode = NULL;
 	}
+	void RemoveCloakGlow();
+	void RenderCloakGlow();
 protected:
 	CCharacter *mParentNode;
 	int mParentBoneID;
+	//cloak previous level 
+	int  CloakprevLevel{ 0 };
 private:
 	void _computeLinkedMatrix();
 };

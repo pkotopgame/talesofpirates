@@ -42,14 +42,14 @@
 #include "UIGlobalVar.h"
 #include "MapSet.h"
 
-
+#include "LootFilter.h"
+#include "SceneItem.h"
+#include "SceneObj.h"
 
 #ifdef _TEST_CLIENT
 #include "..\..\TestClient\testclient.h"
 #endif
 
-
-#include "SceneObj.h"
 #include "Scene.h"
 
 _DBC_USING
@@ -633,15 +633,14 @@ BOOL	SC_ItemCreate(LPRPACKET pk)
 	SCreateInfo.sNum = pk.ReadShort();	// ����
 	SCreateInfo.chAppeType = pk.ReadChar();	// ����ԭ�򣨲μ�CompCommand.h EItemAppearType��
 	SCreateInfo.lFromID = pk.ReadLong();	// �׳�Դ��ID
-
 	ReadEntEventPacket(pk, SCreateInfo.SEvent);
 
-	CSceneItem	*CItem = NetCreateItem(SCreateInfo);
-	if (!CItem)
+	CSceneItem* pItem = NetCreateItem(SCreateInfo);
+	if (!pItem)
 		return FALSE;
 
 	// log
-	LG("SC_Item", "CreateType = %d, WorldID:%u, ItemID = %d, Pos = [%d,%d], SrcID = %u, \n", SCreateInfo.chAppeType, SCreateInfo.lWorldID, SCreateInfo.lID, SCreateInfo.SPos.x, SCreateInfo.SPos.y, SCreateInfo.lFromID);
+	LG("SC_Item", "CreateType = %d, WorldID:%u, ItemID = %d, Pos = [%d,%d], SrcID = %u \n", SCreateInfo.chAppeType, SCreateInfo.lWorldID, SCreateInfo.lID, SCreateInfo.SPos.x, SCreateInfo.SPos.y, SCreateInfo.lFromID);
 	//
 	return TRUE;
 T_E}

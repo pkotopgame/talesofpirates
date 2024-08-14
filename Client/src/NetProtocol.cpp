@@ -1368,7 +1368,7 @@ CSceneItem* NetCreateItem(stNetItemCreate &info)
     pItem->setAttachID(info.lWorldID);
     pItem->lTag = info.lHandle;
     pItem->PlayObjImpPose( ANIM_CTRL_TYPE_MAT, 0, PLAY_LOOP, 0.0f, 2.0f );
-
+	pItem->SetDropType(info.chAppeType);
 	if( info.SEvent.usEventID )
 	{
 		info.SEvent.Exec( pItem );

@@ -36,7 +36,13 @@ public:
 	void		SetStartTick(dbc::uLong ulTick) {m_ulStartTick = ulTick;}
 	void		SetOnTick(dbc::uLong ulOnTick) {m_ulOnTick = ulOnTick;}
 	void		SetProtOnTick(dbc::uLong ulProtOnTick) {m_ulProtOnTick = ulProtOnTick;}
-	void		SetProtCha(dbc::uLong ulChaID, dbc::uLong ulChaHandle) {if (m_ulProtOnTick == 0) m_ulProtID = 0; else m_ulProtID = ulChaID, m_ulProtHandle = ulChaHandle;}
+	void SetProtCha(const uLong ulChaID, const uLong ulChaHandle) {
+		if (m_ulProtOnTick == 0)
+			m_ulProtID = 0;
+		else
+			m_ulProtID = ulChaID;
+		m_ulProtHandle = ulChaHandle;
+	}
 	dbc::uLong	GetProtChaID(void) {return m_ulProtID;}
 	dbc::uLong	GetProtChaHandle(void) {return m_ulProtHandle;}
 	void		SetProtType(dbc::Char chType = enumITEM_PROT_OWN) {m_chProtType = chType;}

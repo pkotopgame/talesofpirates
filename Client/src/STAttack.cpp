@@ -191,6 +191,19 @@ void CWaitAttackState::_UseSkill()
 			{
 				_pSelf->SetPoseVelocity( per); // 1.0f
 			}
+			// rework little bit skill tweak boost for skills using @mothannakh
+			// if want boost some x skill by id more than other skills 
+			auto&& BoostSkillAnimation = [&](const DWORD skillID) -> float {
+				switch (skillID) {
+				case 86: //shadow stun
+					return 2.5f;
+				default:
+					return 2.0f;
+				}
+				};
+			const auto skillid = _pSkillInfo->sID;
+			const auto velco = _pSelf->GetPoseVelocity() * BoostSkillAnimation(skillid);
+			_pSelf->SetPoseVelocity(velco);
 		}
 	}
 

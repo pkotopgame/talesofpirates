@@ -789,6 +789,19 @@ void CCharacterModel::PlayPose( DWORD pose, DWORD type, int time, int fps, DWORD
         //LG("pose", "msgpose[%d]-Сpose[%d],����֡[%d, %d]�Ƿ�\n", pose, _SmallPoseID, pi->start, pi->end );
         return;
     }
+    // rework animation tweak @mothannakh
+    auto&& IsAttackPose = [&](const DWORD typecheck) -> bool {
+        if (typecheck >= POSE_ATTACK && typecheck <= POSE_SKILL5) {
+            return true;
+        }
+        else if (typecheck >= POSE_SKILL12 && typecheck <= POSE_SKILL20) {
+            return true;
+        }
+        else if (typecheck == POSE_SKILL6 || typecheck == POSE_SKILL7) {
+            return true;
+        }
+        return false;
+        };
 
     float velocity = 1.0f;
     if(time > 0)
@@ -806,6 +819,10 @@ void CCharacterModel::PlayPose( DWORD pose, DWORD type, int time, int fps, DWORD
     switch( _ModelType )
     {
     case MODEL_CHARACTER:
+       
+        if (const auto iSplayerModel = MODEL_CHARACTER == GetTypeID(); iSplayerModel && IsAttackPose(pose)) {
+            velocity *= 2.0f;
+        }
         if(FAILED(MPCharacter::PlayPose( p, type, 0.0f, velocity, blend_flag, blend_src_num )))
         {
             //LG("xXx","msgPlay[CHARACTER:%d] pose error:%d, type:%d\n", _TypeID, p, _TypeID);

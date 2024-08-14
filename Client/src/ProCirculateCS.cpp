@@ -305,6 +305,12 @@ void CProCirculateCS::BeginAction( CCharacter* pCha, DWORD type, void* param, CA
                 LG(szLogName, "\n");
 				break;
 			}
+		case enumACTION_ChangepName: {
+			const auto name = static_cast<const char*>(param); // (const char*)param;
+			pk.WriteString(name);
+			pCNetIf->SendPacketMessage(pk);
+			break;
+		}
 		case	enumACTION_SKILL_POSE:
 			{
 				stNetFace	*pNetFace = (stNetFace *)param;

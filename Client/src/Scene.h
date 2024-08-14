@@ -482,7 +482,7 @@ protected:
     areaeffs            _areaeffs;
 
 	CSceneSign			_cSceenSign;
-	std::unique_ptr<CEventMgr> _pEventMgr{ std::make_unique<CEventMgr>(this) };
+	std::unique_ptr<CEventMgr> _pEventMgr;//std::make_unique<CEventMgr>(this)
 	CMapInfo*			_pMapInfo;
 
 protected:	// ¡Ÿ ±±‰¡ø

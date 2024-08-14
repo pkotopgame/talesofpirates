@@ -43,6 +43,8 @@ public:
 	void			setIsSystem( bool v )			{ _IsSystem = v; 			}
     bool            IsHitText( int x, int y );
     void			SetHide(BOOL bHide);
+	void	SetDropType(char type);
+	char	GetDropType()const { return DropType; }
 
 	void    SetItemInfo(int id)					{ _pItemInfo = GetItemRecordInfo( id );}
 	CItemRecord*    GetItemInfo()					{ return _pItemInfo;		}
@@ -80,6 +82,7 @@ protected:
     DWORD           _nCharacterID;
 
 protected:
+	char DropType{ 0 };//check what item dropped by 
 	bool			_IsSystem;					// 道具用于系统，不可操作
 	bool			_IsShowName;
 	CItemRecord*	_pItemInfo;
@@ -145,4 +148,8 @@ inline int CSceneItem::GetItemDrapID()
 inline bool CSceneItem::IsPick()
 {
     return !_IsSystem && _pItemInfo->chIsPick && getAttachedCharacterID()==-1;
+}
+
+inline void CSceneItem::SetDropType(const char type) {
+	DropType = type;
 }

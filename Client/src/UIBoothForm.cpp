@@ -159,11 +159,11 @@ namespace GUI
 		stNumBox* kItemPriceBox = (stNumBox*)pSender->GetForm()->GetPointer();
 		if (!kItemPriceBox) return;
 		
-		const char*  strName;
+		std::string  strName;
 		
 		kItemPriceBox->GetString(strName);
 				
-		CItemRecord* pInfo= GetItemRecordInfo( strName );
+		CItemRecord* pInfo= GetItemRecordInfo( strName.c_str() );
 		
 		if (!pInfo){
 			g_pGameApp->MsgBox( "Invalid Item");
@@ -960,11 +960,11 @@ namespace GUI
 
 		int itemID = kItemPriceBox->GetNumber();
 		
-		const char*  strName;
+		std::string  strName;
 		
 		kItemPriceBox->GetString(strName);
 
-		CItemRecord* pInfo= GetItemRecordInfo( strName );
+		CItemRecord* pInfo= GetItemRecordInfo( strName.c_str() );
 
 		
 		if (!pInfo || pInfo->sType == 43 || !pInfo->chIsTrade){

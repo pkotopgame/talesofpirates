@@ -531,6 +531,12 @@ void CWorldScene::_FrameMove( DWORD dwTimeParam )
         _pShipMgr->FrameMove();
     }
 
+	if (CCharacter* pMain = GetMainCha(); pMain && pMain->GetPart().SLink[enumEQUIP_REAR].sID > 0) {
+		if (static DWORD dwTime = 0; CGameApp::GetCurTick() > dwTime) {
+			dwTime = CGameApp::GetCurTick() + 1500;
+			[[maybe_unused]] auto unusedret = PickItem(true);
+		}
+	}
 	if( _IsAutoPick )
 	{
 		static DWORD dwTime = 0;
@@ -1951,31 +1957,34 @@ CCharacter* CWorldScene::HitSelectCharacter( int nScrX, int nScrY, int nSelect )
     return pObjXXX;
 }
 
-int CWorldScene::PickItem()
+int CWorldScene::PickItem(const bool lootpet)
 {
 	CCharacter* pMain = CGameScene::GetMainCha();
-	if( !pMain ) return 0;
-
-	// pMain->GetActor()->CancelState();
+	if (!pMain) return 0;
 
 	int nCount = 0;
 	stNetItemPick info;
 	CSceneItem* pItem = _pSceneItemArray;
 	int dis = defPICKUP_DISTANCE;
-	if( !pMain->GetIsArrive() )
+	if (!pMain->GetIsArrive())
 	{
 		dis += 100;
 	}
-	for( int i=0; i<_nSceneItemCnt; i++ ) 
+	for (int i = 0; i < _nSceneItemCnt; i++)
 	{
-		if( pItem->IsValid() && !pItem->IsHide() && pItem->getAttachedCharacterID()==-1 && pItem->IsPick() )
+		if (pItem->IsValid() && !pItem->IsHide() && pItem->getAttachedCharacterID() == -1 && pItem->IsPick())
 		{
-			if( GetDistance( pMain->GetServerX(), pMain->GetServerY(), pItem->GetCurX(), pItem->GetCurY() )<=dis )
+			//if its loop pet and not dropped by monster pass it 
+			if (lootpet && pItem->GetDropType() != enumITEM_APPE_MONS)
 			{
-				info.lWorldID	= pItem->getAttachID();
-				info.lHandle    = pItem->lTag;
-				CS_BeginAction( pMain, enumACTION_ITEM_PICK, &info );
-				// _cMouseDown.ActPickItem( pMain, pItem, false );
+				pItem++;
+				continue;
+			}
+			if (GetDistance(pMain->GetServerX(), pMain->GetServerY(), pItem->GetCurX(), pItem->GetCurY()) <= dis)
+			{
+				info.lWorldID = pItem->getAttachID();
+				info.lHandle = pItem->lTag;
+				CS_BeginAction(pMain, enumACTION_ITEM_PICK, &info);
 				nCount++;
 			}
 		}

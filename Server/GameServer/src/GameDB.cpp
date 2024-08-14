@@ -15,31 +15,7 @@ char	szDBLog[256] = "DBData";
 //-------------------
 // �����Ƿ���ͬ����ɫ
 //-------------------
-BOOL CTableCha::VerifyName(const char* pszName)
-{
-	T_B
-	string buf[1];
-	char param[] = "atorNome";
-	char filter[80]; sprintf(filter, "atorNome='%s'", pszName);
-	bool ret = _get_row(buf, 1, param, filter);
-	int	r1 = get_affected_rows();
-	if (ret && r1 > 0)
-	{
-		return TRUE;
-	}
-	return FALSE;
-	T_E
-}
 
-std::string CTableCha::GetName(int cha_id) 
-{
-	string buf[1];
-	const auto param = "atorNome";
-	char filter[80]; 
-	sprintf(filter, "atorID = %d", cha_id);
-	bool ret = _get_row(buf, 1, param, filter);
-	return ret ? buf[0] : "";
-}
 
 #define defKITBAG_DATA_STRING_LEN	8192
 #define defSKILLBAG_DATA_STRING_LEN	1500
@@ -66,6 +42,83 @@ char g_szMisInfo[ROLE_MAXSIZE_DBMISSION];
 char g_szRecord[ROLE_MAXSIZE_DBRECORD];
 char g_szTrigger[ROLE_MAXSIZE_DBTRIGGER];
 char g_szMisCount[ROLE_MAXSIZE_DBMISCOUNT];
+
+
+BOOL CTableCha::VerifyName(const char* pszName) {
+	T_B
+		std::string buf[1];
+	const char param[] = "atorNome";
+	char filter[80];
+	_snprintf_s(filter, sizeof(filter), _TRUNCATE, "atorNome='%s'", pszName);
+	const bool ret = _get_row(buf, 1, param, filter);
+	const int r1 = get_affected_rows();
+	if (ret && r1 > 0) {
+		return TRUE;
+	}
+	return FALSE;
+	T_E
+}
+cChar* CTableCha::GetPlayerNameByRoleID(uLong Cha_id) {
+	string buf[2];
+	char filter[80];
+
+	const char* param = "atorNome";
+	_snprintf_s(filter, sizeof(filter), _TRUNCATE, "atorID =%d", Cha_id);
+	int l_retrow = 0;
+	const bool l_ret = _get_row(buf, 2, param, filter, &l_retrow);
+	if (l_ret && l_retrow == 1) {
+
+		return reinterpret_cast<const char*>(_buf[0]);
+
+	}
+	return "";
+}
+BOOL CTableCha::ChangePlayerName(CPlayer* pPlayer, const char* Name) {
+	T_B
+		if (!pPlayer || !pPlayer->IsValid()) {
+			return false;
+		}
+	CCharacter* pCha = pPlayer->GetMainCha();
+	const short l_len = static_cast<short>(strlen(Name));
+	if (l_len < 1 || l_len > 16) {
+		pCha->PopupNotice("The length of the name must be from 1 to 16 characters!");
+		return false;
+	}
+
+	const DWORD cha_id = pPlayer->GetDBChaId(); //
+	if (cha_id == 0) {
+		return false;
+	}
+
+	_snprintf_s(g_sql, sizeof(g_sql), _TRUNCATE, "Update %s set atorNome = '%s' where atorID = %d;", _get_table(), Name, cha_id);
+	const short l_sqlret = exec_sql_direct(g_sql);
+	if (!DBOK(l_sqlret) || get_affected_rows() == 0) {
+		pCha->PopupNotice(" Change Name Failed! Something Wrong happened, try again ");
+		return false;
+	}
+	LG("Player Change Name", "Player '%s' Changed his Name to '%s'\n", pCha->GetName(), Name);
+	pCha->SetName(Name);
+	const auto& chaPos = const_cast<Square&>(pCha->GetShape());
+	pCha->GetPlayer()->GetMainCha()->Cmd_EnterMap(pCha->GetBirthMap(), -1, chaPos.centre.x, chaPos.centre.y, 0);
+	// send to groupserver
+	WPACKET wpk = GETWPACKET();
+	WRITE_CMD(wpk, CMD_MP_ChangePName);
+	WRITE_STRING(wpk, Name);
+	pCha->ReflectINFof(pCha, wpk);
+
+	return true;
+	T_E
+}
+
+std::string CTableCha::GetName(int cha_id)
+{
+	string buf[1];
+	const auto param = "atorNome";
+	char filter[80];
+	sprintf(filter, "atorID = %d", cha_id);
+	bool ret = _get_row(buf, 1, param, filter);
+	return ret ? buf[0] : "";
+}
 
 bool CTableMaster::Init(void)
 {

@@ -1336,8 +1336,13 @@ Short CCharacter::Cmd_PickupItem(uLong ulID, Long lHandle)
 			return enumITEMOPT_ERROR_UNUSE;
 		}
 	}
+	auto distant = defPICKUP_DISTANCE;
+	if (GetPlyMainCha()->m_SChaPart.SLink[enumEQUIP_REAR].sID > 0)
+	{
+		distant += 700;
+	}
 
-	if (!IsRangePoint(pCEnt->GetPos(), defPICKUP_DISTANCE))
+	if (!IsRangePoint(pCEnt->GetPos(), distant))
 		return enumITEMOPT_ERROR_DISTANCE;
 
 	pCKitbag->SetChangeFlag(false, 0);

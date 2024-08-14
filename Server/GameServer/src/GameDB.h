@@ -37,7 +37,10 @@ public:
 	bool SaveBankDBID(CPlayer *pPlayer);
 	bool SaveTableVer(DWORD atorID);					// 保存表的版本
 	BOOL SaveMissionData(CPlayer *pPlayer, DWORD atorID); // 角色任务信息存盘
-    BOOL VerifyName(const char *pszName);               // 角色名是否存在
+	BOOL VerifyName(const char* pszName);
+	BOOL ChangePlayerName(CPlayer* pPlayer, const char* Name);
+	cChar* GetPlayerNameByRoleID(uLong Cha_id);
+
 	std::string GetName(int cha_id);
 
 	BOOL AddCreditByDBID(DWORD atorID, long lCredit);
@@ -467,6 +470,17 @@ public:
 		}
 
 		return true;
+	}
+	//Verify name 
+	BOOL VerifyName(const char* Name) const {
+		return _tab_cha->VerifyName(Name);
+	}
+	BOOL ChangePlayerName(CPlayer* pPlayer, const char* Name) const {
+		return _tab_cha->ChangePlayerName(pPlayer, Name);
+	}
+
+	cChar* GetPlayerNameByRoleID(uLong Cha_id) const {
+		return _tab_cha->GetPlayerNameByRoleID(Cha_id);
 	}
 	bool	SaveChaAssets(CCharacter *pCCha)
 	{

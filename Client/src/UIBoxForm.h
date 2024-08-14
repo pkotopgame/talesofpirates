@@ -40,7 +40,7 @@ struct stNumBox
 	stNumBox();
 	void Refresh();
 	int GetNumber();
-	void GetString(const char*& out);
+	void GetString(std::string& out) const;
 
 	CForm*  frmDialog;
 	CEdit*	edtNumber;

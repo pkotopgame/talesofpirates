@@ -174,7 +174,13 @@ inline void SetPreName( int nItem, char* szName, DWORD& dwColor )
 	case 5338:	strcpy( szName, g_oLangRec.GetString(929) ); dwColor = COLOR_SKYBLUE; return;//D3DCOLOR_ARGB(255,255,127,000); return;
 	case 5339:	strcpy( szName, g_oLangRec.GetString(930) ); dwColor = COLOR_SKYBLUE; return;//D3DCOLOR_ARGB(255,255,000,000); return;
 	case 5340:	strcpy( szName, g_oLangRec.GetString(931) ); dwColor = COLOR_SKYBLUE; return;//D3DCOLOR_ARGB(255,241,014,240); return;
-
+		//new necklace staff
+	case 9625:	strcpy(szName, g_oLangRec.GetString(959));  dwColor = D3DCOLOR_ARGB(255, 255, 000, 000); return;
+	case 9626:	strcpy(szName, g_oLangRec.GetString(960));  dwColor = COLOR_SKYBLUE; return;	// 荣誉勋章
+	case 9627:	strcpy(szName, g_oLangRec.GetString(961));  dwColor = D3DCOLOR_ARGB(255, 255, 000, 000); return;	// 财富勋章
+		//new necklace players
+	case 9628:	strcpy(szName, g_oLangRec.GetString(962));  dwColor = D3DCOLOR_ARGB(247, 247, 86, 1); return;	// 荣誉勋章
+	case 9629:	strcpy(szName, g_oLangRec.GetString(963));  dwColor = D3DCOLOR_ARGB(247, 247, 86, 1); return;	// 财富勋章
 	// TOM�汾
 	case 822:	strcpy( szName, g_oLangRec.GetString(14) );  dwColor = D3DCOLOR_ARGB(255,255,000,000); return;	// ����ѫ��
 	case 823:	strcpy( szName, g_oLangRec.GetString(15) );  dwColor = D3DCOLOR_ARGB(255,241,014,240); return;	// �Ƹ�ѫ��
@@ -286,7 +292,7 @@ CCharacter::CCharacter()
     memset( _szShopName,0,sizeof(_szShopName) );
     memset( _ItemFace,0,sizeof(_ItemFace) );
 	memset( _pItemFaceEff,0,sizeof(_pItemFaceEff) );
-
+	memset(CLOAKGlow, 0, sizeof(CLOAKGlow));
 	strcpy( _szName, "Player" );
 	strcpy( _szSecondName, "");
 	
@@ -417,6 +423,11 @@ void CCharacter::_UpdateValid(BOOL bValid)
 {
 	if(bValid == FALSE)
 	{
+		//delete cloak glow effect
+		if (CLOAKGlow[enumEQUIP_CLOAK] && IsPlayer())
+		{
+			RemoveCloakGlow();
+		}
 		setSideID( 0 );
 		if( GetDrunkState() ) CCharacterModel::SetDrunkState( FALSE );
 		_pChaState->ChaDestroy();
@@ -1297,7 +1308,7 @@ void CCharacter::setSideID( long v )
 void CCharacter::setGuildID( int nGuildID )			
 { 
 	_nGuildID = nGuildID;	
-	_dwGuildColor=0xffF79F1F;
+	_dwGuildColor=0xffF70000;
 }
 
 void CCharacter::ActionKeyFrame( DWORD key_id )
@@ -1763,17 +1774,87 @@ bool CCharacter::UpdataItem( int nItem, DWORD nLink )
 	}
 
 	case enumEQUIP_GLOWAPP:
-	case enumEQUIP_CLOAK:
+	case enumEQUIP_CLOAK: {	//edited to allow cloak glowing by level from iteminfo @mothannakh 
+		//check if its player , if link cases a cloak , check if not igs view and show effect true 
+		if (IsPlayer() && nItem != 0 && nLink == enumEQUIP_CLOAK && !GetIsForUI() && _ShowEffects)
+		{
+			//we get cloak level 
+			int CloakLv = GetPart().SLink[enumEQUIP_CLOAK].sNeedLv;
+			//lets get player race 
+			int Race = GetDefaultChaInfo()->lID;
+			//we set EffectID
+			int effID = GetCloakGlowByRace(Race, CloakLv);
+			//on switch cloak levels update glow 
+			if (CloakprevLevel != CloakLv)
+			{
+				if (CLOAKGlow[nLink])
+				{
+					RemoveCloakGlow();
+				}
+			}
+			if (CloakLv >= 1 && !CLOAKGlow[nLink] && effID != 0)
+			{
+				//clear old glows on first run
+				if (CLOAKGlow[enumEQUIP_CLOAK])
+				{
+					RemoveCloakGlow();
+				}
+
+
+				CEffectObj* pEffect = _pScene->GetFirstInvalidEffObj();
+				if (pEffect)
+				{
+					if (pEffect->Create(effID))
+					{
+
+
+						pEffect->setLoop(true);
+						pEffect->setFollowObj((CSceneNode*)this, NODE_CHA, 1);
+						pEffect->Emission(-1, NULL, NULL);
+						pEffect->SetValid(TRUE);
+						CLOAKGlow[enumEQUIP_CLOAK] = pEffect;
+						CLOAKGlow[enumEQUIP_CLOAK]->SetScale(1, 1, 1);
+						//set cloak level in memory 
+						CloakprevLevel = CloakLv;
+
+					}
+
+				}
+
+			}
+		}
+		else //when take item off 
+		{
+			//clear the effect
+			if (CLOAKGlow[enumEQUIP_CLOAK] && nItem == 0 && nLink == enumEQUIP_CLOAK)
+			{
+				RemoveCloakGlow();
+			}
+			//if hide effect active delete our glow 
+			if (CLOAKGlow[enumEQUIP_CLOAK] && !_ShowEffects)
+			{
+				RemoveCloakGlow();
+
+			}
+
+		}
+
+	}//cloak case end 
 	case enumEQUIP_REAR:
 	case enumEQUIP_WING:
 	case enumEQUIP_FAIRY: {
-		if(IsHide()) {
-			if( _pHandItemEff[nLink] ){
-				_pHandItemEff[nLink]->SetValid( FALSE );
+		if (IsHide()) {
+			if (_pHandItemEff[nLink]) {
+				_pHandItemEff[nLink]->SetValid(FALSE);
 				_pHandItemEff[nLink] = NULL;
 			}
+			//cloak glow 
+			if (CLOAKGlow[enumEQUIP_CLOAK])
+			{
+				RemoveCloakGlow();
+			}
 			return false;
-		} 
+		}
 		
 		
 		if(!GetIsForUI() && _ShowEffects){		//!GetIsForUI() && _ShowEffects
@@ -2357,6 +2438,7 @@ void CCharacter::SetHide(BOOL bHide)
 			_pHandItemEff[i]->SetHide( bHide );	
 		}
 	}
+	RemoveCloakGlow();
 }
 
 void CCharacter::RefreshFog()
@@ -2782,4 +2864,81 @@ CCharacter* CCharacter::GetMount(){
 		return chaMount;
 	}
 	return NULL;
+}
+
+
+
+//Cloak Glow helper @mothannakh
+int CCharacter::GetCloakGlowByRace(const int race, const int level) {
+	switch (race) {
+	case 1: // lance
+	{
+		if (level >= 1 && level <= 4) {
+			return 4100;
+		}
+		if (level >= 5 && level <= 9) {
+			return 4101;
+		}
+		return 4102;
+	}
+	case 2: // Carsise
+	{
+		if (level >= 1 && level <= 4) {
+			return 4103;
+		}
+		if (level >= 5 && level <= 9) {
+			return 4104;
+		}
+		return 4105;
+	}
+	case 3: // Phyllis
+	{
+		if (level >= 1 && level <= 4) {
+			return 4106;
+		}
+		if (level >= 5 && level <= 9) {
+			return 4107;
+		}
+		return 4108;
+	}
+	case 4: // Ami
+	{
+		if (level >= 1 && level <= 4) {
+			return 4109;
+		}
+		if (level >= 5 && level <= 9) {
+			return 4110;
+		}
+		return 4111;
+	}
+
+	default:
+		break;
+	}
+	return 0;
+}
+//end of file add :
+//remove cloak glow public call
+void CCharacter::RemoveCloakGlow()
+{
+	if (CLOAKGlow[enumEQUIP_CLOAK])
+	{
+		CLOAKGlow[enumEQUIP_CLOAK]->SetValid(FALSE);
+		CLOAKGlow[enumEQUIP_CLOAK] = NULL;
+		CloakprevLevel = 0;
+
+
+	}
+}
+void CCharacter::RenderCloakGlow()
+{
+	if (GetPart().SLink[enumEQUIP_CLOAK].sID != 0)
+	{
+		if (!CLOAKGlow[enumEQUIP_CLOAK] && CloakprevLevel == 0 && IsPlayer())
+		{
+			UpdataItem(15053, enumEQUIP_CLOAK);
+		}
+
+	}
+
 }

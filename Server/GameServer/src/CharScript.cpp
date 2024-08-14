@@ -4171,6 +4171,38 @@ inline int lua_TradeItemLevelCheck( lua_State* L )
 
 	return 1;
 }*/
+// Player Change Name
+inline int lua_ChangePlayerName(lua_State* L) {
+	T_B
+		const BOOL bValid = (lua_gettop(L) == 2 && lua_islightuserdata(L, 1) && lua_isstring(L, 2));
+	if (!bValid) {
+		PARAM_ERROR
+			return 0;
+	}
+	const auto pCha = static_cast<CCharacter*>(lua_touserdata(L, 1));
+	cChar* newname = lua_tostring(L, 2);
+	if (pCha) {
+		game_db.ChangePlayerName(pCha->GetPlayer(), newname);
+		return 1;
+	}
+	return 0;
+	T_E
+}
+// Player Verify Name
+inline int lua_VerifyName(lua_State* L) {
+	T_B
+		const BOOL bValid = (lua_gettop(L) == 1 && lua_isstring(L, 1));
+	if (!bValid) {
+		PARAM_ERROR
+			return 0;
+	}
+	cChar* newname = lua_tostring(L, 1);
+	const BOOL bRet = game_db.VerifyName(newname);
+	lua_pushnumber(L, (bRet) ? LUA_TRUE : LUA_FALSE);
+
+	return 1;
+	T_E
+}
 
 inline int lua_TradeItemDataCheck( lua_State* L )
 {
@@ -6512,6 +6544,8 @@ BOOL RegisterCharScript()
 	REGFN(GetPlyExpRate);
 
 	REGFN(RemoveOfflineMode);
+	REGFN(ChangePlayerName)
+		REGFN(VerifyName) // for change name, using with card
 	// AI�����Ǽ�
 	RegisterLuaAI(g_pLuaState);
 	

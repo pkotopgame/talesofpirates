@@ -406,6 +406,7 @@ bool	CGameScene::_Clear()
 
 CGameScene::CGameScene(stSceneInitParam& param)
 :
+_pEventMgr(std::make_unique<CEventMgr>(this)),
  _bShowTerrain(FALSE),
  _bShowSceneObj(TRUE),
  _bShowSceneItem( TRUE ),
