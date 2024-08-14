@@ -36,6 +36,8 @@ bool CS_Connect(dbc::cChar *hostname,dbc::uShort port,dbc::uLong timeout)
 //------------------------
 void CS_Disconnect(int reason)
 {
+	//fix offline stall
+	g_stUIBooth.PullBoothSuccess();
 	g_NetIF->m_pCProCir->Disconnect(reason);
 }
 
@@ -59,20 +61,20 @@ void CS_Login(const char *accounts,const char *password, const char* passport)
 //------------------------
 void CS_Logout()
 {
-
+	//fix offline stall
+	g_stUIBooth.PullBoothSuccess();
 	g_NetIF->m_pCProCir->Logout();
 	return;
 
 	// ��Ϊ�������˳���ʱ,����������µ�¼ʱ�ֻ�����������Կ,����˳�������������Կ, lh by 2006-02
     // ������Կ
-    memset(g_NetIF->_key, 0, sizeof g_NetIF->_key);
-    g_NetIF->_key_len = 0;
-	g_NetIF->_comm_enc = 0;
-	g_NetIF->_enc = false;
+   
 }
 
 void CS_OfflineMode()
 {
+	//fix stall bugs with offline stalls
+	//g_stUIBooth.PullBoothSuccess();
 	WPacket pk = g_NetIF->GetWPacket();
 	pk.WriteCmd(CMD_CM_OFFLINE_MODE);
 	g_NetIF->SendPacketMessage(pk);
