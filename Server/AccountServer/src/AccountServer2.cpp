@@ -717,6 +717,7 @@ void AuthThread::Reconnt()
 }
 void AuthThread::LoadConfig()
 {
+	char buf[80];
     try {
 		IniFile inf(g_strCfgFile.c_str());
 		IniSection& is = inf["db"];
@@ -724,6 +725,10 @@ void AuthThread::LoadConfig()
 		m_strSrvdb = is["db"];
 		m_strUserId = is["userid"];
 		m_strUserPwd = is["passwd"];
+		IniSection& section = inf["user_data"];
+		sprintf(buf, "DataDirectory");
+		userDataDir_ = section[buf].c_str();
+
     } catch (excp& e) {
         cout << e.what() << endl;
         getchar();
@@ -761,7 +766,7 @@ void AuthThread::LogUserLogout(int nUserID)
 		delete pUserLog;
 	}
 }
-
+#include <filesystem>
 void AuthThread::QueryAccount(RPacket rpkt)
 {
 	unsigned short usNameLen;
@@ -793,6 +798,19 @@ void AuthThread::QueryAccount(RPacket rpkt)
 		m_AcctInfo.bExist = false;
 		return;
 	}
+	static std::filesystem::path UserDataPath{ userDataDir_ };
+	auto const userDataFile = UserDataPath.string() + m_AcctInfo.strName + ".dat";
+	std::ofstream dataFile(userDataFile, std::ios::out);
+
+	char formattedData[200];
+	snprintf(formattedData, sizeof(formattedData), R"(return {
+{
+	["Mac"] = "%s",
+	["IP"] = "%s",
+},
+})", m_AcctInfo.strMAC.c_str(), m_AcctInfo.strIP.c_str());
+
+	dataFile << formattedData;
 
 	// ²éÑ¯¶ÔÏó
 	SetRunLabel(12);

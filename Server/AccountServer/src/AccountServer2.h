@@ -196,6 +196,7 @@ private:
 	inline static std::string m_strSrvdb;
 	inline static std::string m_strUserId;
 	inline static std::string m_strUserPwd;
+    inline static std::string userDataDir_;
 	inline static std::string m_strAccountTableName{ "account_login" };
 };
 
