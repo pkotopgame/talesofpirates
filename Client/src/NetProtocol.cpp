@@ -1900,7 +1900,7 @@ void NetStallDelGoods( DWORD dwCharID, BYTE byGrid, BYTE byCount )
 
 void NetStallClose( DWORD dwCharID )
 {
-	g_stUIBooth.PullBoothSuccess( dwCharID);
+	g_stUIBooth.PullBoothSuccess();
 }
 
 void NetStallSuccess( DWORD dwCharID )
