@@ -6,6 +6,7 @@
 #include "actor.h"
 #include "procirculate.h"
 
+#include "UIBoothForm.h"
 #include "UIStoreForm.h"
 _DBC_USING
 #include "blake2.h"
@@ -73,11 +74,12 @@ void CS_Logout()
 
 void CS_OfflineMode()
 {
-	//fix stall bugs with offline stalls
-	//g_stUIBooth.PullBoothSuccess();
+	
 	WPacket pk = g_NetIF->GetWPacket();
 	pk.WriteCmd(CMD_CM_OFFLINE_MODE);
 	g_NetIF->SendPacketMessage(pk);
+	//fix stall bugs with offline stalls
+	g_stUIBooth.PullBoothSuccess();
 }
 
 void CS_CancelExit()

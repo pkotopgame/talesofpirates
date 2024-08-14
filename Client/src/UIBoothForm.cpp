@@ -435,28 +435,16 @@ namespace GUI
 		//���Ű�̯����
 	}
 
-	void CBoothMgr::PullBoothSuccess(DWORD id)
+	void CBoothMgr::PullBoothSuccess() const
 	{
-		//��ֹ��̯����
-	
-
-		g_pGameApp->GetCurScene()->SearchByHumanID(id)->PlayPose(POSE_WAITING, PLAY_LOOP_SMOOTH);
-			
-		
-				/*
-		for (int i(0); i<g_stUIBooth.m_iBoothItemMaxNum; i++)
-		{
-			if (g_stUIBooth.m_kBoothItems[i])
-			{
-				g_stUIBooth.RemoveBoothItemByNum(g_stUIBooth.m_kBoothItems[i], 
+		for (int i(0); i < g_stUIBooth.m_iBoothItemMaxNum; i++) {
+			if (g_stUIBooth.m_kBoothItems[i]) {
+				g_stUIBooth.RemoveBoothItemByNum(g_stUIBooth.m_kBoothItems[i],
 					g_stUIBooth.m_kBoothItems[i]->iNum);
 			}
 		}
 		g_stUIBooth.ClearBoothItems();
-
-		//�رձ���
-		CloseBoothUI();
-		*/
+		g_stUIBooth.CloseBoothUI();
 	}
 
 	void CBoothMgr::OpenBoothUI()

@@ -720,101 +720,95 @@ int	COneMoveState::GetSyschroDistance()
 	if( len < 1000 ) len = 1000;
 	return len;
 }
-
-void COneMoveState::FrameMove()
-{
+void COneMoveState::FrameMove() {
 	// Dynamically adjust the moving speed of the protagonist
 	const float fAddStep = 0.005f;
 	const float fDownStep = 0.05f;
-
-	if( _fMoveRate > _fRate )
-	{
+	if (_fMoveRate > _fRate) {
 		_fMoveRate -= fDownStep;
 	}
-	else if( _fMoveRate < _fRate - fDownStep )
-	{
+	else if (_fMoveRate < _fRate - fDownStep) {
 		_fMoveRate += fAddStep;
 	}
+	//fix stun stuck second fix @mothannakh
+	if (_nSendCount == _nEndCount + 1 && _nStartCount > _nSendCount) {
+		if (_dwSendTime + 3000 < CGameApp::GetCurTick()) {
+			//LG("SynchroPos","[SynchroPos] SendElapsed %u\n", CGameApp::GetCurTick() - _dwSendTime);
+			PopState();
+			SynchroPos(_pCha->GetServerX(), _pCha->GetServerY());
+		}
+	}
 
-	if( _nSendCount==_nEndCount && _nStartCount>_nSendCount )
-	{
+	if (_nSendCount == _nEndCount && _nStartCount > _nSendCount) {
 		// The server has returned to the end of the move, check if there is a cache move, and send a new move protocol
-		if( !SendInfo() )
-		{
+		if (!SendInfo()) {
 			PopState();
 			return;
 		}
 	}
-	
-	if( _pCha->GetIsArrive() )
-	{
-		if( _cLocalList.IsEmpty() && _cNeedList.empty() && _nSendCount==_nEndCount )
-		{
+
+	if (_pCha->GetIsArrive()) {
+		if (_cLocalList.IsEmpty() && _cNeedList.empty() && _nSendCount == _nEndCount) {
 			// The server has returned to the end of the move, and there is no cache move, the state is over
 			PopState();
 			return;
 		}
 
-		if( !_cLocalList.IsEmpty() )
-		{
+		if (!_cLocalList.IsEmpty()) {
 			// Perform cache move
-			if( !(_pCha->GetCurPoseType()==POSE_RUN || _pCha->GetCurPoseType()==POSE_RUN2) )
-			{
+			if (!(_pCha->GetCurPoseType() == POSE_RUN || _pCha->GetCurPoseType() == POSE_RUN2)) {
 				ChaRun();
 			}
 			_cLocalList.GotoFront(_pCha);
 		}
-		else if( GetActor()->IsEmpty() && _cNeedList.empty() )
-		{			
+		else if (GetActor()->IsEmpty() && _cNeedList.empty()) {
 			// The protagonist has moved to the destination before the server and is waiting for the server's end mark
 			// In order to prevent people from standing still, call Idle directly
 			GetActor()->IdleState();
 		}
 	}
 
-	if( _nSendCount==_nEndCount && CGameApp::GetCurTick()>_dwEndTime )
-	{
-		if( dynamic_cast<CAttackState*>( GetActor()->GetNextState() ) )
-		{
+	if (_nSendCount == _nEndCount && CGameApp::GetCurTick() > _dwEndTime) {
+		if (dynamic_cast<CAttackState*>(GetActor()->GetNextState())) {
 			// Check if the next state is the attack state and the server has returned to the end
 			// Regardless of whether there is a cache move, this move state is ended, ready to attack
 			PopState();
 			return;
 		}
 
-		if( !_cNeedList.empty() )
-		{
+		if (!_cNeedList.empty()) {
 			// The server has returned to the end, perform a new cache move
-			NeedPath& pt = _cNeedList.front();
-			StartMove( pt.x, pt.y, pt.IsLine );
+			const NeedPath& pt = _cNeedList.front();
+			StartMove(pt.x, pt.y, pt.IsLine);
 			_cNeedList.pop_front();
 		}
 	}
 }
 
-void COneMoveState::PushPoint( int x, int y )
-{
-	// Adjust the speed of the protagonist according to the difference between the protagonist and the server
+
+void COneMoveState::PushPoint(int x, int y) {
+	// Adjust the speed of the protagonist according to the distance between the protagonist and the server
 	int nLocal = 0;
-	if( _cLocalList.IsEmpty() )
-	{
-		nLocal = GetDistance( _pCha->GetCurX(), _pCha->GetCurY(), _nTargetX, _nTargetY );
+	if (_cLocalList.IsEmpty()) {
+		nLocal = GetDistance(_pCha->GetCurX(), _pCha->GetCurY(), _nTargetX, _nTargetY);
 	}
-	else
-	{
-		nLocal = _cLocalList.GetListDistance( _pCha->GetCurX(), _pCha->GetCurY() ) + _pCha->GetTargetDistance();
+	else {
+		nLocal = _cLocalList.GetListDistance(_pCha->GetCurX(), _pCha->GetCurY()) + _pCha->GetTargetDistance();
 	}
 
-	_fRate = _fNormalRate;
-	if( GetDistance( _pCha->GetServerX(), _pCha->GetServerY(), _nTargetX, _nTargetY )>80 )
-	{
-		if( g_cFindPath.Find( _pCha->GetScene(), _pCha, _pCha->GetServerX(), _pCha->GetServerY(), _nTargetX, _nTargetY, _IsWalkLine ) )
-		{
-			_fRate = RefreshRate( nLocal, g_cFindPath.GetLength() );
+	if (!g_cFindPathEx.HaveTarget()) {
+		_fRate = _fNormalRate;
+		if (GetDistance(_pCha->GetServerX(), _pCha->GetServerY(), _nTargetX, _nTargetY) > 80) {
+			//for fix stun walks bugs form clint stmovement  @mothannakh
+			//if (g_cFindPath.Find(_pCha->GetScene(), _pCha, _pCha->GetServerX(), _pCha->GetServerY(), _nTargetX, _nTargetY, _IsWalkLine)) {
+			if (g_cFindPath.GetPathFindingState()) {
+				_fRate = RefreshRate(nLocal, g_cFindPath.GetLength());
+			}
 		}
 	}
-	LG( "moverate", "PushPoint:%f\n", _fRate );
+	LG("moverate", "PushPoint:%f\n", _fRate);
 }
+
 
 bool COneMoveState::StartMove( int nTargetX, int nTargetY, bool isWalkLine )
 {

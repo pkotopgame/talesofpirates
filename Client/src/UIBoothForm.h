@@ -43,16 +43,16 @@ namespace GUI
 		void RemoveTradeBoothItem( DWORD dwCharID, int iGrid, int iCount); // ɾ����Ʒ
 
 		void SetupBoothSuccess(); 
-		void PullBoothSuccess(DWORD dwCharID);   
+		void PullBoothSuccess()const;   
 
 		// Getters And Setters
 		CGoodsGrid* GetBoothItemsGrid() { return grdBoothItem; }
-		DWORD GetOwnerId() { return m_dwOwnerId; }
+		DWORD GetOwnerId()const { return m_dwOwnerId; }
 		void  SetOwnerId(DWORD dwOwnerId) { m_dwOwnerId = dwOwnerId; }
 		//�жϱ����Ƿ��
 		bool IsOpen() { return frmBooth->GetIsShow(); }
 		//�ж��Ƿ��ڰ�̯
-		bool IsSetupedBooth() { return m_bSetupedBooth; }
+		bool IsSetupedBooth()const { return m_bSetupedBooth; }
 		void SetSetupedBooth(bool bSetupedBooth) { m_bSetupedBooth = bSetupedBooth; }
 
 		//����������̯���رձ���

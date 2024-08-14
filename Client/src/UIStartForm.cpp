@@ -216,7 +216,7 @@ void CStartMgr::SetTargetInfo(CCharacter* pTargetCha)
 
 void CStartMgr::RefreshTargetModel(CCharacter* pChaPointer) 
 {
-    if (pTarget) {
+    if (pTarget && pChaPointer) {
         static stNetTeamChaPart stTeamPart;
         stTeamPart.Convert(pChaPointer->GetPart());
 
