@@ -90,14 +90,19 @@ void CStartMgr::CleanDropListForm()
 	}
 }
 
-void CStartMgr::SetMonsterInfo() 
+void CStartMgr::SetMonsterInfo()
 {
 	CleanDropListForm();
-
+	if (!pChaPointer)
+	{
+		return;
+	}
 	CChaRecord* charInfo = GetChaRecordInfo(pChaPointer->getMobID());
-	CItemRecord* tInfo;
+	if (!charInfo)
+		return;
+	CItemRecord* tInfo = nullptr;
 	CItemRow* pRow(NULL);
-	CItem* content;
+	CItem* content = nullptr;
 	std::vector<std::vector<int>>vect(defCHA_INIT_ITEM_NUM, vector<int>(2, 0));
 
 	int max = 15;
@@ -109,22 +114,22 @@ void CStartMgr::SetMonsterInfo()
 			break;
 		}
 	}
-	
+
 	sort(vect.begin(), vect.end() - (15 - max), sortcol);
 	for (int i = 0; i < max; i++) {
 		CItemRecord* rInfo = GetItemRecordInfo(vect[i][0]);
-		if (!rInfo) 
+		if (!rInfo)
 			continue;
 
 		CItemCommand* rItem = new CItemCommand(rInfo);
-		if (!rItem) 
-			continue;	
+		if (!rItem)
+			continue;
 
 		listMobDrops[i]->AddCommand(rItem);
 		listMobDrops[i]->SetIsEnabled(false);
 
 		const char* item_name = rInfo->szName;
-		char get_name[128] = {0};
+		char get_name[128] = { 0 };
 		sprintf(get_name, "%s", StringLimit(item_name, 16).c_str());
 		LabMobItems[i]->SetCaption(get_name);
 
@@ -136,8 +141,8 @@ void CStartMgr::SetMonsterInfo()
 		char item_rate[25];
 		sprintf(item_rate, "%0.2f%%", calcuDrop);
 		LabMobRates[i]->SetCaption(item_rate);
-		
-		if (!rInfo) 
+
+		if (!rInfo)
 			return;
 
 		if (checkDropFilter[i]) {

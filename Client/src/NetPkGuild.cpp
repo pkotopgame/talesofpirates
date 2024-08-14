@@ -3,7 +3,7 @@
 #include "netcommand.h"
 #include "uiguildmgr.h"
 #include "uiglobalvar.h"
-
+#include "GameApp.h"
 
 using namespace std;
 
@@ -98,7 +98,7 @@ BOOL MC_GUILD_LISTTRYPLAYER(LPRPACKET pk)
 		cChar*	l_chaname = pk.ReadString();
 		cChar*	l_job = pk.ReadString();
 		uShort	l_degree = pk.ReadShort();
-		//g_pGameApp->SysInfo("id %d , %s, %s %d", l_chaid, l_chaname, l_job, l_degree);
+		g_pGameApp->SysInfo("id %d , %s, %s %d", l_chaid, l_chaname, l_job, l_degree);
 		NetMC_LISTTRYPLAYER(l_chaid,l_chaname,l_job,l_degree);
 	}
 	NetMC_LISTTRYPLAYER_END();

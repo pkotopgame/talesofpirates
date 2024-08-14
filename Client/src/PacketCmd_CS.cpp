@@ -100,6 +100,8 @@ void CS_BeginPlay(char cha_index)
 //------------------------
 void CS_EndPlay()
 {
+	//fix stall bugs with offline stalls @mothannakh
+	g_stUIBooth.PullBoothSuccess();
 	g_NetIF->m_pCProCir->EndPlay();
 }
 
