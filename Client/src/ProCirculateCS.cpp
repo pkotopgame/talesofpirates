@@ -379,6 +379,12 @@ void CProCirculateCS::BeginAction( CCharacter* pCha, DWORD type, void* param, CA
 				pCNetIf->SendPacketMessage(pk);
 				break;
 			}
+		case enumACTION_GOLDSTORE: {
+			int gold = (int)param;
+			pk.WriteLong(gold);
+			pCNetIf->SendPacketMessage(pk);
+			break;
+		}
 		default:
 			break;
 		}

@@ -84,7 +84,7 @@ CGameMovie			g_GameMovie;
 LootFilter*         g_lootFilter            = NULL;
 
 // �ͻ��˰汾��, ��GateServer����֤
-short g_sClientVer = 78519;
+short g_sClientVer = 18215;
 short g_sKeyData = short(g_sClientVer * g_sClientVer * 0x93828311); // 0x1232222
 char g_szSendKey[4];
 char g_szRecvKey[4];

@@ -130,9 +130,14 @@ private:
 	static void _RotateSpyRight(CGuiData *sender, int x, int y, DWORD key );
 	static void _RotateSpyLeftContinue(CGuiData *sender );
 	static void _RotateSpyRightContinue(CGuiData *sender );
+	static void _showSortOptions(CGuiData* pSender);
 	static void _ClickOpenApparel(CGuiData *pSender, int x, int y, DWORD key );
 	static void _ClickTempBag(CGuiData* pSender, int x, int y, DWORD key);
 	static void _OnDragStates(CGuiData* pSender, int x, int y, DWORD key);
+
+	static void _ClickGoldStore(CGuiData* pSender, int x, int y, DWORD key);
+	static void _evtGoldStoreEvent(CCompent* pSender, int nMsgType, int x, int y, DWORD dwKey);
+	static void _ClickSortInv(CGuiData* pSender, int x, int y, DWORD key);
 private:
 	static int				lIMP;
 	CForm*			frmSkill;
@@ -144,7 +149,10 @@ private:
     CSkillList*     lstSailSkill;               // º½º£¼¼ÄÜÀ¸
 
 	CTextButton* btnOpenTempBag;
-	
+	CTextButton* btnSortPrice;
+	CTextButton* btnSortAlpha;
+	CTextButton* btnSortType;
+	CTextButton* btnSortID;
 	
 	CCheckBox* chkLinkEqForm;
 	

@@ -324,6 +324,87 @@ void CCharacter::ProcessPacket(unsigned short usCmd, RPACKET pk)
 				SetRelive(enumEPLAYER_RELIVE_ORIGIN, 0);
 			break;
 		}
+	case CMD_CM_INVSORT: {
+
+		if (m_CKitbag.IsPwdLocked())
+		{
+			SystemNotice(RES_STRING(GM_CHARSCRIPT_CPP_00013));
+			return;
+		}
+		int sortType = pk.ReadChar();
+		int sortDir = pk.ReadChar(); //1 = asc, 0 = desc
+
+		if (sortType > 3 || sortDir > 1) {
+			return;
+		}
+
+		//0 - price
+		//1 - alpha
+		//2 - Type
+		//3 - ID
+
+		int slots = m_CKitbag.GetCapacity();
+
+		//group items of the same type togethor. ?
+		for (int slot = 0; slot < slots; slot++) {
+			for (int slot2 = 0; slot2 < slots - 1; slot2++) {
+				USHORT sItemID = m_CKitbag.GetID(slot2, 0);
+				USHORT sItemID2 = m_CKitbag.GetID(slot, 0);
+				if (sItemID == sItemID2) {
+					m_CKitbag.Regroup(slot, 0, slot2);
+				}
+			}
+		}
+
+		for (int slot = 0; slot < slots; slot++) {
+			for (int slot2 = 0; slot2 < slots - 1; slot2++) {
+				USHORT sItemID = m_CKitbag.GetID(slot2, 0);
+				USHORT sItemID2 = m_CKitbag.GetID(slot2 + 1, 0);
+				if (sItemID <= 0 || sItemID == sItemID2) {
+					//invalid means move to the right
+					m_CKitbag.Switch(slot2, slot2 + 1);
+				}
+				else if (sItemID2 > 0) {
+					CItemRecord* pItem1 = GetItemRecordInfo(sItemID);
+					CItemRecord* pItem2 = GetItemRecordInfo(sItemID2);
+
+					int pItem1Value = 0;
+					int pItem2Value = 0;
+
+					switch (sortType) {
+					case 0: {//sort price
+						pItem1Value = pItem1->lPrice;
+						pItem2Value = pItem2->lPrice;
+						break;
+					}
+					case 1: {//sort alpha
+						pItem1Value = 0;
+						pItem2Value = -strcmp(pItem1->szName, pItem2->szName);
+						break;
+					}
+					case 2: {//sort type
+						pItem1Value = pItem1->sType;
+						pItem2Value = pItem2->sType;
+						break;
+					}
+					case 3: {//sort ID
+						pItem1Value = pItem1->lID;
+						pItem2Value = pItem2->lID;
+						break;
+					}
+					}
+					//use ID as a tie breaker.
+
+					if (((sortDir == 1) && ((pItem1Value == pItem2Value && pItem1->lID < pItem2->lID) || pItem1Value < pItem2Value))
+						|| ((sortDir == 0) && ((pItem1Value == pItem2Value && pItem1->lID > pItem2->lID) || pItem1Value > pItem2Value))
+						) {
+						m_CKitbag.Switch(slot2, slot2 + 1);
+					}
+				}
+			}
+		}
+		SynKitbagNew(enumSYN_KITBAG_SWITCH);
+	}return;
 	case CMD_CM_SAY:
 		{
 			DWORD	dwNowTick = GetTickCount();
@@ -679,8 +760,8 @@ void CCharacter::ProcessPacket(unsigned short usCmd, RPACKET pk)
 			
 			if (sSkillID == 241 && chSkillLv == 2) {
 				
-				if (pMainCha->HasItem(19674,1)) {
-					if (!pMainCha->TakeItem(19674, 1, "ds"))
+				if (pMainCha->HasItem(9973,1)) {
+					if (!pMainCha->TakeItem(9973, 1, "ds"))
 						break;
 				}
 				else {
@@ -2383,6 +2464,17 @@ void CCharacter::BeginAction(RPACKET pk)
 				ItemOprateFailed(sRet);
 		}
 		break;
+	case enumACTION_GOLDSTORE: {
+		CCharacter* pCMainCha = GetPlyMainCha();
+		CPlayer* pCPly = GetPlayer();
+		if (pCMainCha->m_CKitbag.IsLock() || pCMainCha->m_CKitbag.IsPwdLocked() || pCPly->GetStallData() || pCPly->GetMainCha()->GetTradeData()) {
+			SystemNotice("Bag is currently locked.");
+			return;
+		}
+
+		g_CParser.DoString("CreateGoldStore", enumSCRIPT_RETURN_NUMBER, 0, enumSCRIPT_PARAM_LIGHTUSERDATA, 1, this, enumSCRIPT_PARAM_NUMBER, 1, pk.ReadLong(), DOSTRING_PARAM_END);
+		break;
+	}
 	case enumACTION_CLOSE_BANK:
 		{
 			GetPlayer()->CloseBank();

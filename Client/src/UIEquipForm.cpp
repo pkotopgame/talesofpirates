@@ -425,6 +425,18 @@ bool CEquipMgr::Init()
 	
 	btnOpenTempBag = (CTextButton*)frmInv->Find("btnOpenTempBag");
 	btnOpenTempBag->evtMouseClick = _ClickTempBag;
+	CCheckBox* chkSortInv = dynamic_cast<CCheckBox*>(frmInv->Find("chkSortInv"));
+	chkSortInv->evtCheckChange = _showSortOptions;
+	btnSortPrice = (CTextButton*)frmInv->Find("btnSortPrice");
+	btnSortPrice->evtMouseClick = _ClickSortInv;
+	btnSortAlpha = (CTextButton*)frmInv->Find("btnSortAlpha");
+	btnSortAlpha->evtMouseClick = _ClickSortInv;
+	btnSortType = (CTextButton*)frmInv->Find("btnSortType");
+	btnSortType->evtMouseClick = _ClickSortInv;
+	btnSortID = (CTextButton*)frmInv->Find("btnSortID");
+	btnSortID->evtMouseClick = _ClickSortInv;
+	CTextButton* btnGoldStore = (CTextButton*)frmInv->Find("btnGoldStore");
+	btnGoldStore->evtMouseClick = _ClickGoldStore;
 	
 	if (rightClickItemMenu = CMenu::FindMenu("inventoryItemRightClick"); rightClickItemMenu) {
 		rightClickItemMenu->evtListMouseDown = [](CGuiData* pSender, int x, int y, DWORD key) {
@@ -552,6 +564,45 @@ bool CEquipMgr::Init()
 	
 	return true;
 }
+void CEquipMgr::_ClickGoldStore(CGuiData* pSender, int x, int y, DWORD key) {
+	g_stUIBox.ShowNumberBox(_evtGoldStoreEvent, g_stUIBoat.GetHuman()->getGameAttr()->get(ATTR_GD), g_oLangRec.GetString(781), true);
+}
+void CEquipMgr::_evtGoldStoreEvent(CCompent* pSender, int nMsgType, int x, int y, DWORD dwKey) {
+	if (nMsgType != CForm::mrYes) return;
+
+	stNumBox* pBox = (stNumBox*)pSender->GetForm()->GetPointer();
+	if (!pBox) return;
+
+	CS_BeginAction(g_stUIBoat.GetHuman(), enumACTION_GOLDSTORE, (void*)pBox->GetNumber());
+}
+void CEquipMgr::_ClickSortInv(CGuiData* pSender, int x, int y, DWORD key) {
+	string name = pSender->GetName();
+	//CForm* frmInv = _FindForm("frmInv");
+	CCheckBox* chkSortDir = dynamic_cast<CCheckBox*>(g_stUIEquip.frmInv->Find("chkSortDir"));
+	int dir = (int)chkSortDir->GetIsChecked();
+	int sort = 0;
+	if (name == "btnSortPrice") {
+		sort = 0;
+	}
+	else if (name == "btnSortAlpha") {
+		sort = 1;
+	}
+	else if (name == "btnSortType") {
+		sort = 2;
+	}
+	else if (name == "btnSortID") {
+		sort = 3;
+	}
+	CS_InvSort(sort, dir);
+}
+
+void CEquipMgr::_showSortOptions(CGuiData* pSender) {
+	g_stUIEquip.btnSortPrice->SetIsShow(!g_stUIEquip.btnSortPrice->GetIsShow());
+	g_stUIEquip.btnSortAlpha->SetIsShow(!g_stUIEquip.btnSortAlpha->GetIsShow());
+	g_stUIEquip.btnSortType->SetIsShow(!g_stUIEquip.btnSortType->GetIsShow());
+	g_stUIEquip.btnSortID->SetIsShow(!g_stUIEquip.btnSortID->GetIsShow());
+}
+
 
 void CEquipMgr::_ClickTempBag(CGuiData* pSender, int x, int y, DWORD key) {
 	string name = pSender->GetName();

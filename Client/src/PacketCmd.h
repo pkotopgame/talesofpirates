@@ -151,6 +151,7 @@ extern void CS_GuildBankTakeGold(int gold);
 extern void CS_GuildBankTakeGold(int gold);
 
 extern void CS_Say(const char *pszContent);
+extern void CS_InvSort(int type, int dir = 0);
 extern void CS_Register(const char *user,const char *pass,const char *email);
 extern void CS_GuildBankGiveGold(int value);
 extern void CS_GuildBankTakeGold(int value);

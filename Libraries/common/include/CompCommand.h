@@ -55,6 +55,7 @@ enum EActionType // server,client ֮����ж�����
 	enumACTION_REQUESTGUILDBANK,
 	enumACTION_REQUESTGUILDLOGS,
 	enumACTION_UPDATEGUILDLOGS,
+	enumACTION_GOLDSTORE,
 	enumACTION_ChangepName,
 	enumMAX_ACTION_NUM		// ����ж�����
 };

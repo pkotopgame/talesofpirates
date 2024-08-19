@@ -130,6 +130,13 @@ void CS_DelCha(uint8_t cha_index, const char szPassword2[])
 void CS_Say(const char *content){
 	g_NetIF->m_pCProCir->Say(content);
 }
+void CS_InvSort(int type, int dir) {
+	WPacket pk = g_NetIF->GetWPacket();
+	pk.WriteCmd(CMD_CM_INVSORT);
+	pk.WriteChar(type);
+	pk.WriteChar(dir);
+	g_NetIF->SendPacketMessage(pk);
+}
 
 void CS_GuildBankOper(stNetBank * pNetBank){
 	if (g_pGameApp->GetCurScene()->GetMainCha()->IsBoat()) {
