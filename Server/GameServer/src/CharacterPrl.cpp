@@ -1992,10 +1992,11 @@ void CCharacter::ProcessPacket(unsigned short usCmd, RPACKET pk)
 	case CMD_CM_CHEAT_CHECK:
 		{
 			//防外挂暂时不上
-			/*CCharacter *pMainCha = GetPlyMainCha();
-
+			CCharacter *pMainCha = GetPlyMainCha();
+			if (!pMainCha)
+				break;
 			cChar *answer = READ_STRING(pk);
-			pMainCha->CheatCheck(answer);*/
+			pMainCha->CheatCheck(answer);
 		}
 		break;
 	case CMD_CM_BIDUP:
