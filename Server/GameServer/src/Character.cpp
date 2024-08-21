@@ -7657,8 +7657,8 @@ float CCharacter::GetDropRate() {
 	// Fortune Lot, Charmed Berry, Amplifier of Luck, Loveless Tear
 	// Special Lucky Fruit
 	// Super Lucky Fruit and Hi-Amplifier of Luck
-	if (m_CSkillState.GetSStateByID(48)) {
-		switch (m_CSkillState.GetSStateByID(48)->GetStateLv()) {
+	if (m_CSkillState.GetSStateByID(49)) {
+		switch (m_CSkillState.GetSStateByID(49)->GetStateLv()) {
 			case 1:
 				ampBonus = 2.0;
 				break;
@@ -7667,6 +7667,15 @@ float CCharacter::GetDropRate() {
 				break;
 			case 3:
 				ampBonus = 3.25;
+				break;
+			case 4:
+				ampBonus = 4.0;
+				break;
+			case 5:
+				ampBonus = 4.5;
+				break;
+			case 6:
+				ampBonus = 5.0;
 				break;
 			default:
 				ampBonus = 1.0;
@@ -7746,10 +7755,19 @@ float CCharacter::GetExpRate() {
 				ampBonus = 2.5;
 				break;
 			case 3:
-				ampBonus = 5.0;
+				ampBonus = 3.0;
 				break;
 			case 4:
-				ampBonus = 10.0;
+				ampBonus = 3.5;
+				break;
+			case 5:
+				ampBonus = 4.0;
+				break;
+			case 6:
+				ampBonus = 4.5;
+				break;
+			case 7:
+				ampBonus = 5.0;
 				break;
 			default:
 				ampBonus = 1.0;
